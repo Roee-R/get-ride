@@ -7,6 +7,7 @@ import configureStore from './store/configureStore';
 import {login, logout} from '../src/actions/auth';
 import {firebase} from './firebase/firebase'; // improt our firebase db
 import LoadingPage from './components/LoadingPage';
+import { startSetRides } from './actions/rides';
 
 import './styles/styles.scss'
 import 'normalize.css/normalize.css'
@@ -33,10 +34,12 @@ ReactDOM.render(<LoadingPage />,document.getElementById('app'));
 firebase.auth().onAuthStateChanged((user)=>{ // event hendler for every time user login/logout or refreshing the app
     if(user){ // if user login
         store.dispatch(login(user.uid));
-        renderApp(); // use function to run ReactDOM , but just we the user reload the page
-        if(history.location.pathname ==='/'){ // Check if the loged user on the root location
-            history.push('/dashboard'); // Push to dashboard
-        }  
+        store.dispatch(startSetRides()).then(()=>{ // dispatch expenses
+            renderApp(); // use function to run ReactDOM , but just we the user reload the page
+            if(history.location.pathname ==='/'){ // Check if the loged user on the root location
+                history.push('/dashboard'); // Push to dashboard
+            }
+        })    
     }
     else{ // user is logout
         store.dispatch(logout()); // sent to auth reduser

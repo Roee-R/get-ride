@@ -3,16 +3,16 @@ const ridesReduserDefaultState = [];
 
 export default (state=ridesReduserDefaultState, action)=>{
     switch(action.type) {
-        case 'NEW_RIDE':
+        case 'SET_RIDES':{
+            return action.rides
+        }
+        case 'NEW_RIDE':{
             const newRide={
-                createdAt: action.createdAt,
-                rideId: action.rideId,
-                type: 'service taxi',
-                ...action.route,
-                passengers: {...action.passengers},
+                ...action.newRoute,
+                type: 'service taxi'
             };
-            return {...newRide};
-        case 'NEW_PASSENGER':
+            return {...newRide};}
+        case 'NEW_PASSENGER':{
             state.map((ride)=>{
                 if(ride.rideId===action.rideId){
                     if(ride.passengers.length<11){
@@ -25,7 +25,7 @@ export default (state=ridesReduserDefaultState, action)=>{
                     return ride
                 }
             })
-            
+        }
         default: 
             return state
     }

@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
+import {SingleDatePicker} from 'react-dates';
 import moment from 'moment';
+import 'react-dates/initialize';
 
 import { startAddRide } from '../actions/rides';
 
@@ -11,21 +12,33 @@ export class AddNewRoute extends React.Component {
         from: '',
         destination: '',
         fullName: '',
+        startTime: "12:00",
+        endTime: "15:00",
+        createdAt: moment(),
+        calendarFocused: false,
         error: ''
     }
 
     handleNewRide = (e)=>{
         e.preventDefault();
-        if(this.state.description==='' || this.state.amount==='' || this.state.fullName===''){
+        if(this.state.from==='' || this.state.destination==='' || 
+        this.state.fullName==='' || this.state.startTime===undefined || 
+        this.state.endTime===undefined){
             this.setState(()=>({error: 'Please type route details including your full name'}))
         }
         else{
-            const route = {pickLock: this.state.from, to: this.state.destination}
+            const route = {
+                pickLock: this.state.from, 
+                to: this.state.destination, 
+                startTime:this.state.startTime,
+                endTime:this.state.endTime,
+                createdAt: this.state.createdAt.valueOf()
+            }
             const passengers= [{
                 userId: this.props.passengerUid,
                 fullName: this.state.fullName
             }]
-            const routeDetailes = {...route,passengers,createdAt:moment().valueOf()}
+            const routeDetailes = {...route,passengers}
             this.props.startAddRide(routeDetailes);
             this.props.history.push('/dashboard');    
         }
@@ -52,11 +65,18 @@ export class AddNewRoute extends React.Component {
         })) 
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        // Typical usage (don't forget to compare props):
-        if (this.state.createdAt !== prevState.createdAt) {
-            alert(this.state.createdAt);
-        }
+    onStartTimeChange = (e)=>{
+        const startTime = e.target.value;
+        this.setState(()=>({
+            startTime
+        })) 
+    }
+
+    onEndTimeChange = (e)=>{
+        const endTime = e.target.value;
+        this.setState(()=>({
+            endTime
+        })) 
     }
 
     render(){
@@ -64,6 +84,15 @@ export class AddNewRoute extends React.Component {
             <form onSubmit={this.handleNewRide} className="form">
             <h1>Please choose your ride route</h1>
             {this.state.error.length>0&&<span>{this.state.error}</span>}
+            <SingleDatePicker
+            date={this.state.createdAt} // momentPropTypes.momentObj or null
+            onDateChange={createdAt => createdAt && this.setState({ createdAt })} // PropTypes.func.isRequired
+            focused={this.state.calendarFocused} // PropTypes.bool
+            onFocusChange={({ focused }) => this.setState({ calendarFocused:focused })} // PropTypes.func.isRequired
+            numberOfMonths= {1}
+            isOutsideRange={()=>false}
+            // id="your_unique_id" // PropTypes.string.isRequired,
+            />
             <input type="text" 
             placeholder="from"
             value={this.state.from}
@@ -80,6 +109,20 @@ export class AddNewRoute extends React.Component {
             placeholder="full name"
             value={this.state.fullName}
             onChange={this.onfullNameChange}
+            />
+            <input 
+            type="time" 
+            placeholder="Start time"
+            value={this.state.startTime}
+            step="3600"
+            onChange={this.onStartTimeChange}
+            />
+            <input 
+            type="time" 
+            placeholder="End time"
+            value={this.state.endTime}
+            step="3600"
+            onChange={this.onEndTimeChange}
             />
             <button className="button">Choose</button>
             </form>

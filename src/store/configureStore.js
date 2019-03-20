@@ -12,7 +12,7 @@ const store = ()=>(
     createStore( // inital the store 
     combineReducers({ // use the combine
         auth: authReducer,
-        ride: ridesReducer
+        rides: ridesReducer
     }),
     composeEnhancers(applyMiddleware(thunk)) // redux middleware to run function on disptach
     // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() // react extension to use redux devtool on the chrome

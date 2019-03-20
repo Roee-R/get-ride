@@ -1,8 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
+import RideList from './RideList';
 import AddNewRoute from './AddNewRoute';
 
-class DashboardPage extends React.Component {
+export default class DashboardPage extends React.Component {
 
     newRoute=()=>{
         this.props.history.push('/newRoute');
@@ -12,13 +14,11 @@ class DashboardPage extends React.Component {
         return(
             <div>
                 <button onClick={this.newRoute}>Add new Route</button>
-                <AddNewRoute />    
+                <AddNewRoute />
                 <h2>The planned rides:</h2>
+                <RideList />    
             </div>
         )
     }   
 }
 
-
-export default DashboardPage;
-    
