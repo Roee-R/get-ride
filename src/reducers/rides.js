@@ -11,16 +11,12 @@ export default (state=ridesReduserDefaultState, action)=>{
                 ...action.newRoute,
                 type: 'service taxi'
             };
-            return {...newRide};}
+            return [...state,newRide];}
         case 'NEW_PASSENGER':{
             state.map((ride)=>{
-                if(ride.rideId===action.rideId){
-                    if(ride.passengers.length<11){
-                        ride.passenger.push(action.passenger);
-                        return [...state, ride];}
-                    else
-                        return ride;     
-                }
+                if(ride.id===action.rideId){
+                    alert(`yeh`);
+                    return [...state, action.updateRide];}
                 else{
                     return ride
                 }
