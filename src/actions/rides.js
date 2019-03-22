@@ -50,7 +50,7 @@ export const startSetRides = ()=>{
         return database.ref(`rides`).once('value').then((snapshot)=>{
             const ridesArray = [];
             snapshot.forEach(ride => {
-                var newride = {...ride.val()};
+                var newride = {id:ride.key,...ride.val()};
                 ridesArray.push(newride);
             });
             dispatch(setRides(ridesArray));
