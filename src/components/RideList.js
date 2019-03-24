@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import getVisibleRide from '../logic/rides'; // return sorted array
 import RideListItem from './RideListItem'; // Return item from the list
 
 export const RideList = (props) =>(
@@ -27,7 +28,7 @@ export const RideList = (props) =>(
 )
 const mapStateToProps = (state) =>{
     return {
-        rides: state.rides
+        rides: getVisibleRide(state.rides, state.filters)
     };
 };
 

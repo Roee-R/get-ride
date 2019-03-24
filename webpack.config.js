@@ -57,7 +57,7 @@ module.exports = (env) =>{ // the function will called with env veribe
         'process.env.FIREBASE_MESSAGING_SENDER_ID': JSON.stringify(process.env.FIREBASE_MESSAGING_SENDER_ID)
       })
     ],
-    devtool: isProdaction? 'source-map' : 'eval', //-source-map
+    devtool: isProdaction? 'source-map' : 'eval-source-map', //-source-map
     devServer:{
       contentBase: path.resolve(__dirname, 'public'),
       historyApiFallback: true,
