@@ -16,7 +16,7 @@ export default (state=ridesReduserDefaultState, action)=>{
             state.map((ride)=>{
                 if(ride.id===action.rideId){
                     alert(`yeh`);
-                    return [...state, action.updateRide];}
+                    return [...state, action.updatedRide];}
                 else{
                     return ride
                 }

@@ -3,40 +3,46 @@ import { connect } from 'react-redux';
 import RideForm from "../components/RideForm";
 import NewPassengerForm from './NewPassengerForm'
 import { startAddPassengerToRide } from '../actions/rides';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import "react-tabs/style/react-tabs.css";
+
 
 export class AddPassemgerPage extends React.Component {
 
     state = {
-        error: ''
+        error: '',
+        routeDetailes: this.props.requestedRide || '',
     }
 
     MAX_PEOPLE = 10;
 
+
     handleNewPassenger = (passenger)=>{
-        alert(`${this.props.numOfPassengers}<=${this.MAX_PEOPLE}`)
-        if(this.props.numOfPassengers<=this.MAX_PEOPLE){
-            const routeId=this.props.requestedRide.id;
-            this.props.startAddPassengerToRide(routeId,passenger);
-            this.props.history.push('/');     
-        }
-        else{
-            this.setState(()=>({error: 'Ride are full'}));
-        }
+        const routeId=this.state.routeDetailes.id;
+        this.props.startAddPassengerToRide(routeId,passenger);
+        this.props.history.push('/');     
     }
 
     render(){
         return (
-            <div>
-                <h1>{this.state.error.length>0&&this.state.error}</h1>
-                <h1>Route details:</h1>
-                <RideForm 
-                requestedRide= {this.props.requestedRide}
-                addPassengerPage={true}
-                />
-                <NewPassengerForm 
-                handleNewPassenger={this.handleNewPassenger}
-                />
-                </div>
+            <Tabs>
+                <TabList>
+                    <Tab>Route Deatils</Tab>
+                    <Tab>passenger Details</Tab>
+                </TabList>
+                <TabPanel>
+                    <RideForm 
+                    requestedRide= {this.props.requestedRide}
+                    addPassengerPage={true}
+                    /> 
+                </TabPanel>
+                <TabPanel>
+                    <NewPassengerForm
+                    requestedRide= {this.props.requestedRide} 
+                    handleNewPassenger={this.handleNewPassenger}
+                    />
+                </TabPanel>
+            </Tabs>
             )
     }
 }
@@ -46,7 +52,6 @@ const mapStateToProps = (state,props)=>{
         (ride)=>ride.id===props.match.params.id)
     return {
         requestedRide: requestedRide,
-        numOfPassengers: state.rides[state.rides.indexOf(requestedRide)].passengers.length
     }
 }
 

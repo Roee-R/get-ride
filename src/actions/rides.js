@@ -15,6 +15,7 @@ export const startAddRide = (routeDetailesData = {}) =>{
             pickLock='',
             to='',
             createdAt=0,
+            creatorPassenger= '',
             passengers=[],
             startTime='',
             endTime='',
@@ -22,18 +23,20 @@ export const startAddRide = (routeDetailesData = {}) =>{
 
         const routeDetailes = {
             route:{pickLock,to},
-            creatorPassengers: passengers[0],
-            passengers: [],
+            creatorPassenger,
+            passengers,
             startTime,
             endTime,
             createdAt
         }
-
-        const passenger = routeDetailes.creatorPassengers;
+        const passenger = routeDetailes.passengers[0];
         let id= null
-        return database.ref(`rides`).push(routeDetailes).then((ref)=>{ // the return is for chaning promises
+        return database.ref(`rides`).push({
+            ...routeDetailes,
+            passengers:[]
+        }).then((ref)=>{ // the return is for chaning promises
             id = ref.key;
-            return dispatch(addRide({id,...routeDetailes}));
+            return dispatch(addRide({id,...routeDetailes,passengers:[]}));
         }).then(()=>{
             dispatch(startAddPassengerToRide(id,passenger));
         });
@@ -61,10 +64,10 @@ export const startSetRides = ()=>{
 
 
 
-export const addPassengerToRide = (rideId, updateRide) =>({
+export const addPassengerToRide = (rideId, updatedRide) =>({
     type: 'NEW_PASSENGER',
     rideId,
-    updateRide
+    updateRided
 });
 
 export const startAddPassengerToRide = (rideId, passenger) =>{

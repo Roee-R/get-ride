@@ -14,7 +14,7 @@ export const RideList = (props) =>(
             {props.rides.length>0 
                 ? (props.rides.map((ride)=>{
                     return (<RideListItem key={ride.id} 
-                    {...ride} 
+                    {...ride}
                     />)
                 }))
                 : (<div className="list-item list-item--message">

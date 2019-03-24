@@ -11,7 +11,7 @@ export class RideForm extends React.Component {
         this.state = {
             from: props.requestedRide ? props.requestedRide.route.pickLock : '',
             destination: props.requestedRide ? props.requestedRide.route.to : '',
-            fullName: '',
+            fullName: props.requestedRide ? props.requestedRide.creatorPassenger.fullName : '',
             startTime: props.requestedRide ? props.requestedRide.startTime : "12:00",
             endTime: props.requestedRide ? props.requestedRide.endTime : "15:00",
             createdAt: props.requestedRide ? moment(props.requestedRide.createdAt) : moment(),
@@ -36,11 +36,11 @@ export class RideForm extends React.Component {
                 endTime:this.state.endTime,
                 createdAt: this.state.createdAt.valueOf()
             }
-            const passengers= [{
+            const creatorPassenger= {
                 userId: this.props.passengerUid,
                 fullName: this.state.fullName
-            }]
-            const routeDetailes = {...route,passengers}
+            }
+            const routeDetailes = {...route,creatorPassenger}
             this.props.handleNewRide(routeDetailes);
         }
     }
@@ -130,7 +130,7 @@ export class RideForm extends React.Component {
             onChange={this.onEndTimeChange}
             disabled= {this.props.addPassengerPage}
             />
-            <button className="button">Choose</button>
+            {this.props.addPassengerPage===false && <button className="button">Choose</button>}
             </form>
         )
     }

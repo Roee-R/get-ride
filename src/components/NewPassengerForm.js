@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import 'react-dates/initialize';
 
+import passengersSum from '../logic/passengerSum';
 
 export class NewPassengerForm extends React.Component {
     constructor(props){
@@ -9,31 +10,41 @@ export class NewPassengerForm extends React.Component {
         this.state = {
             fullName: '',
             preferredTime: '',
-            numOfPassengers: '',
+            numOfPassengers: 0,
             address: "",
             error: ''
         }
+        this.MAX_PEOPLE = 10;
     }
     
 
     handleNewPassenger = (e)=>{
         e.preventDefault();
+        const newPassengerSum = this.props.numOfRidePassengers+parseInt(this.state.numOfPassengers);
         if ( this.state.fullName==='' || 
         this.state.preferredTime==='' || 
-        this.state.numOfPassengers==='' || 
+        this.state.numOfPassengers===0 || 
         this.state.address==='' )
         {
             this.setState(()=>({error: 'Please type passengers details'}))
         }
+        else if (this.MAX_PEOPLE<newPassengerSum){
+            this.setState(()=>({
+                error: `There is only ${this.MAX_PEOPLE-this.props.numOfRidePassengers} seats left`
+            }));        }
+        else if (this.props.numOfRidePassengers>this.MAX_PEOPLE){
+            this.setState(()=>({error: 'Ride are full'}));
+        }
         else{
-            const passengers= {
+            const passenger= {
                 userId: this.props.passengerUid,
                 fullName: this.state.fullName,
                 preferredTime: this.state.preferredTime,
                 address: this.state.address,
                 numOfPassengers: this.state.numOfPassengers
             };
-            this.props.handleNewPassenger(passengers);
+            this.setState(()=>({error: ''}));
+            this.props.handleNewPassenger(passenger);
         }
     }
 
@@ -52,7 +63,7 @@ export class NewPassengerForm extends React.Component {
     }
 
     onNumOfPassengersChange = (e) =>{
-        const numOfPassengers = e.target.value;
+        const numOfPassengers = parseInt(e.target.value);
         this.setState(()=>({
             numOfPassengers
         })) 
@@ -69,7 +80,7 @@ export class NewPassengerForm extends React.Component {
         return(
             <form onSubmit={this.handleNewPassenger} className="form">
             {this.state.error.length>0&&<span>{this.state.error}</span>}
-            <input type="text" 
+            <input type="text" autoFocus 
             placeholder="Full name"
             value={this.state.fullName}
             onChange={this.onfullNameChange}
@@ -102,7 +113,8 @@ export class NewPassengerForm extends React.Component {
 
 const mapStateToProps = (state, props) =>{
     return {
-        passengerUid: state.auth.uid
+        passengerUid: state.auth.uid,
+        numOfRidePassengers: props.requestedRide ? passengersSum(props.requestedRide.passengers) : 0
     };
 };
 
